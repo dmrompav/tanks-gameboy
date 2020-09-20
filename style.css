@@ -3,6 +3,7 @@ body {
 	height: 100vh;
 	background-color: #224488;
 	overflow: hidden;
+	user-select: none;
 }
 .screen {
 	display: flex;
@@ -28,6 +29,7 @@ body {
 	height: 10px;
 	border: 1px solid #555555;
 	margin: 1px;
+	transition: background-color 0.1s ;
 }
 .buttons {
 	display: flex;
