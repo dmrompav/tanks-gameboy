@@ -10,19 +10,25 @@ for (i = 0; i < row.length; i++) {
 var tank = {
 	x: 4,
 	y: 9,
-	nav: 9,  //12-3-6-9
+	nav: 12,  //12-3-6-9
 	speed: 0,
 	up: true,
 	right: true,
 	down: true,
 	left: true,
 	bomb: {
-		
+
 	}
 };
 
 //*Process ===========================================
 TankDraw(tank);
+document.querySelector('.up').addEventListener('mousedown', KeyMoveUp);
+document.querySelector('.right').addEventListener('mousedown', KeyMoveRight);
+document.querySelector('.down').addEventListener('mousedown', KeyMoveDown);
+document.querySelector('.left').addEventListener('mousedown', KeyMoveLeft);
+document.querySelector('.arrows').addEventListener('mouseup', KeyStop);
+document.querySelector('.shot').addEventListener('click', KeyShot);
 document.addEventListener('keydown', KeyMove);
 document.addEventListener('keyup', KeyStop);
 setInterval(MapDraw, 100);
@@ -94,8 +100,32 @@ function KeyMove(e) {
 		tank.speed = 1;
 	}
 }
+function KeyMoveUp(cl) {
+	cl.preventDefault();
+	tank.nav = 12;
+	tank.speed = 1;
+}
+function KeyMoveRight(cl) {
+	cl.preventDefault();
+	tank.nav = 3;
+	tank.speed = 1;
+}
+function KeyMoveDown(cl) {
+	cl.preventDefault();
+	tank.nav = 6;
+	tank.speed = 1;
+}
+function KeyMoveLeft(cl) {
+	cl.preventDefault();
+	tank.nav = 9;
+	tank.speed = 1;
+}
 function KeyStop(key) {
 	tank.speed = 0;
+}
+
+function KeyShot() {
+
 }
 function Move() {
 	if (tank.x == 1) { tank.left = false } else { tank.left = true };
