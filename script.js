@@ -1,148 +1,285 @@
+const u = document.querySelector('.up'),
+	r = document.querySelector('.right'),
+	d = document.querySelector('.down'),
+	l = document.querySelector('.left'),
+	arrows = document.querySelector('.arrows'),
+	shot = document.querySelector('.shot');
+
+
 // *Elements ======================================
-//Map
+//Map ------------------
 var row = document.querySelectorAll('.row'),
-	a = [],
-	map = [];
+	a = [];
 for (i = 0; i < row.length; i++) {
 	a[i] = row[i].querySelectorAll('.col');
-	map[i] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 }
+//Tanks ----------------
 var tank = {
 	x: 4,
 	y: 9,
 	nav: 12,  //12-3-6-9
 	speed: 0,
-	up: true,
-	right: true,
-	down: true,
-	left: true,
-	bomb: {
-
-	}
+	permission: true,
+	bomb: [],
 };
 
 //*Process ===========================================
-TankDraw(tank);
-document.querySelector('.up').addEventListener('mousedown', KeyMoveUp);
-document.querySelector('.right').addEventListener('mousedown', KeyMoveRight);
-document.querySelector('.down').addEventListener('mousedown', KeyMoveDown);
-document.querySelector('.left').addEventListener('mousedown', KeyMoveLeft);
-document.querySelector('.arrows').addEventListener('mouseup', KeyStop);
-document.querySelector('.shot').addEventListener('click', KeyShot);
+MapDraw();											//Let start
+u.addEventListener('mousedown', KeyMoveUp);			//Click listeners
+r.addEventListener('mousedown', KeyMoveRight);
+d.addEventListener('mousedown', KeyMoveDown);
+l.addEventListener('mousedown', KeyMoveLeft);
+shot.addEventListener('click', KeyShot);
 document.addEventListener('keydown', KeyMove);
-document.addEventListener('keyup', KeyStop);
-setInterval(MapDraw, 100);
-setInterval(Move, 100);
+setInterval(Move, 150);								//FPS
+setInterval(BombMove, 50);
 
 //*Functions ========================================
-function MapDraw() {
-	for (i = 0; i < 20; i++) {
-		for (j = 0; j < 10; j++) {
-			map[i][j] = 0;
-			TankDraw(tank);
-			if (map[i][j] == 0) {
-				a[i][j].style.backgroundColor = "#777777"
-			}
-			else {
-				a[i][j].style.backgroundColor = "#000000"
-			}
-		}
-	}
+function MapDraw() {														//Drawing -----------
+	TankDraw(tank);
+}
+function TankClear(tank) {
+	a[tank.y - 1][tank.x].style.backgroundColor = "#777777";
+	a[tank.y][tank.x - 1].style.backgroundColor = "#777777";
+	a[tank.y][tank.x].style.backgroundColor = "#777777";
+	a[tank.y][tank.x + 1].style.backgroundColor = "#777777";
+	a[tank.y + 1][tank.x].style.backgroundColor = "#777777";
+	a[tank.y - 1][tank.x - 1].style.backgroundColor = "#777777";
+	a[tank.y - 1][tank.x + 1].style.backgroundColor = "#777777";
+	a[tank.y + 1][tank.x - 1].style.backgroundColor = "#777777";
+	a[tank.y + 1][tank.x + 1].style.backgroundColor = "#777777";
 }
 function TankDraw(tank) {
-	map[tank.y][tank.x] = 1;
-	map[tank.y - 1][tank.x] = 1;
-	map[tank.y + 1][tank.x] = 1;
-	map[tank.y][tank.x - 1] = 1;
-	map[tank.y][tank.x + 1] = 1;
+	a[tank.y - 1][tank.x].style.backgroundColor = "#000000";
+	a[tank.y][tank.x - 1].style.backgroundColor = "#000000";
+	a[tank.y][tank.x].style.backgroundColor = "#000000";
+	a[tank.y][tank.x + 1].style.backgroundColor = "#000000";
+	a[tank.y + 1][tank.x].style.backgroundColor = "#000000";
+
 	if (tank.nav == 12) {
-		map[tank.y - 1][tank.x - 1] = 0;
-		map[tank.y - 1][tank.x + 1] = 0;
-		map[tank.y + 1][tank.x + 1] = 1;
-		map[tank.y + 1][tank.x - 1] = 1;
+		// a[tank.y - 1][tank.x - 1].style.backgroundColor = "#000000";
+		// a[tank.y - 1][tank.x + 1].style.backgroundColor = "#000000";
+		a[tank.y + 1][tank.x - 1].style.backgroundColor = "#000000";
+		a[tank.y + 1][tank.x + 1].style.backgroundColor = "#000000";
 	}
 	else if (tank.nav == 3) {
-		map[tank.y - 1][tank.x - 1] = 1;
-		map[tank.y - 1][tank.x + 1] = 0;
-		map[tank.y + 1][tank.x + 1] = 0;
-		map[tank.y + 1][tank.x - 1] = 1;
+		a[tank.y - 1][tank.x - 1].style.backgroundColor = "#000000";
+		// a[tank.y - 1][tank.x + 1].style.backgroundColor = "#000000";
+		a[tank.y + 1][tank.x - 1].style.backgroundColor = "#000000";
+		// a[tank.y + 1][tank.x + 1].style.backgroundColor = "#000000";
 	}
 	else if (tank.nav == 6) {
-		map[tank.y - 1][tank.x - 1] = 1;
-		map[tank.y - 1][tank.x + 1] = 1;
-		map[tank.y + 1][tank.x + 1] = 0;
-		map[tank.y + 1][tank.x - 1] = 0;
+		a[tank.y - 1][tank.x - 1].style.backgroundColor = "#000000";
+		a[tank.y - 1][tank.x + 1].style.backgroundColor = "#000000";
+		// a[tank.y + 1][tank.x - 1].style.backgroundColor = "#000000";
+		// a[tank.y + 1][tank.x + 1].style.backgroundColor = "#000000";
 	}
 	else {
-		map[tank.y - 1][tank.x - 1] = 0;
-		map[tank.y - 1][tank.x + 1] = 1;
-		map[tank.y + 1][tank.x + 1] = 1;
-		map[tank.y + 1][tank.x - 1] = 0;
+		// a[tank.y - 1][tank.x - 1].style.backgroundColor = "#000000";
+		a[tank.y - 1][tank.x + 1].style.backgroundColor = "#000000";
+		// a[tank.y + 1][tank.x - 1].style.backgroundColor = "#000000";
+		a[tank.y + 1][tank.x + 1].style.backgroundColor = "#000000";
 	}
 }
-function KeyMove(e) {
+function BombClear() {
+	if (!tank.permission) {
+		a[tank.bomb[2]][tank.bomb[1]].style.backgroundColor = "#777777";
+	}
+}
+function BombDraw() {
+	if (!tank.permission) {
+		a[tank.bomb[2]][tank.bomb[1]].style.backgroundColor = "#000000";
+	}
+}
+function KeyMove(e) {														//Keys --------------
 	let key = e.key;
-	key.preventDefault;
 	if (key == 'ArrowUp') {
-		tank.nav = 12;
-		tank.speed = 1;
+		KeyMoveUp()
 	}
-	if (key == 'ArrowRight') {
-		tank.nav = 3;
-		tank.speed = 1;
+	else if (key == 'ArrowRight') {
+		KeyMoveRight()
 	}
-	if (key == 'ArrowDown') {
-		tank.nav = 6;
-		tank.speed = 1;
+	else if (key == 'ArrowDown') {
+		KeyMoveDown()
 	}
-	if (key == 'ArrowLeft') {
-		tank.nav = 9;
-		tank.speed = 1;
+	else if (key == 'ArrowLeft') {
+		KeyMoveLeft()
+	}
+	else {
+		KeyShot();
 	}
 }
-function KeyMoveUp(cl) {
-	cl.preventDefault();
+function KeyMoveUp() {
 	tank.nav = 12;
 	tank.speed = 1;
+	document.addEventListener('keyup', KeyStop);
+	arrows.addEventListener('mouseup', KeyStop);
 }
-function KeyMoveRight(cl) {
-	cl.preventDefault();
+function KeyMoveRight() {
 	tank.nav = 3;
 	tank.speed = 1;
+	document.addEventListener('keyup', KeyStop);
+	arrows.addEventListener('mouseup', KeyStop);
 }
-function KeyMoveDown(cl) {
-	cl.preventDefault();
+function KeyMoveDown() {
 	tank.nav = 6;
 	tank.speed = 1;
+	document.addEventListener('keyup', KeyStop);
+	arrows.addEventListener('mouseup', KeyStop);
 }
-function KeyMoveLeft(cl) {
-	cl.preventDefault();
+function KeyMoveLeft() {
 	tank.nav = 9;
 	tank.speed = 1;
+	document.addEventListener('keyup', KeyStop);
+	arrows.addEventListener('mouseup', KeyStop);
 }
-function KeyStop(key) {
+function KeyStop() {
 	tank.speed = 0;
 }
-
 function KeyShot() {
-
-}
-function Move() {
-	if (tank.x == 1) { tank.left = false } else { tank.left = true };
-	if (tank.x == 8) { tank.right = false } else { tank.right = true };
-	if (tank.y == 1) { tank.up = false } else { tank.up = true };
-	if (tank.y == 18) { tank.down = false } else { tank.down = true };
-	if (tank.nav == 12 && tank.up == true) {
-		tank.y -= tank.speed
+	if (tank.permission) {
+		tank.bomb = [tank.nav, tank.x, tank.y];
 	}
-	else if (tank.nav == 3 && tank.right == true) {
-		tank.x += tank.speed
-	}
-	else if (tank.nav == 6 && tank.down == true) {
-		tank.y += tank.speed
-	}
-	else if (tank.nav == 9 && tank.left == true) {
-		tank.x -= tank.speed
-	}
+	tank.permission = false;
 }
 
+
+function Move() {															//Functions ----------
+	TankClear(tank);
+	if (tank.nav == 12 && tank.y > 1) {
+		tank.y -= tank.speed;
+	}
+	else if (tank.nav == 3 && tank.x < 8) {
+		tank.x += tank.speed;
+	}
+	else if (tank.nav == 6 && tank.y < 18) {
+		tank.y += tank.speed;
+	}
+	else if (tank.nav == 9 && tank.x > 1) {
+		tank.x -= tank.speed;
+	}
+	TankDraw(tank);
+}
+function BombMove() {
+	BombClear();
+	if (tank.bomb[1] == 0 || tank.bomb[1] == 9 || tank.bomb[2] == 0 || tank.bomb[2] == 19) {
+		tank.bomb = 0;
+		tank.permission = true;
+	};
+	if (tank.bomb[0] == 12 && tank.bomb[2] > 0) {
+		tank.bomb[2] -= 1
+	}
+	else if (tank.bomb[0] == 3 && tank.bomb[1] < 9) {
+		tank.bomb[1] += 1
+	}
+	else if (tank.bomb[0] == 6 && tank.bomb[2] < 19) {
+		tank.bomb[2] += 1
+	}
+	else if (tank.bomb[0] == 9 && tank.bomb[1] > 0) {
+		tank.bomb[1] -= 1
+	}
+	BombDraw();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function BombDraw() {
+// 	// if (!bomb.length == 0) {
+// 	// 	for (i = 0; i < bomb.length; i++) {
+// 	// 		map[bomb[i][1]][bomb[i][0]] = 1;
+// 	// 	}
+// 	// }
+// }
+// function KeyMove(e) {
+// 	let key = e.key;
+// 	key.preventDefault;
+// 	if (key == 'ArrowUp') {
+// 		KeyMoveUp(event);
+// 	}
+// 	if (key == 'ArrowRight') {
+// 		KeyMoveRight(event);
+// 	}
+// 	if (key == 'ArrowDown') {
+// 		KeyMoveDown(event);
+// 	}
+// 	if (key == 'ArrowLeft') {
+// 		KeyMoveLeft(event);
+// 	}
+// }
+// function KeyMoveUp(event) {														//Keys ------------------
+// 	event.preventDefault();
+// 	tank.nav = 12;
+// 	tank.speed = 1;
+// }
+// function KeyMoveRight(event) {
+// 	event.preventDefault();
+// 	tank.nav = 3;
+// 	tank.speed = 1;
+// }
+// function KeyMoveDown(event) {
+// 	event.preventDefault();
+// 	tank.nav = 6;
+// 	tank.speed = 1;
+// }
+// function KeyMoveLeft(event) {
+// 	event.preventDefault();
+// 	tank.nav = 9;
+// 	tank.speed = 1;
+// }
+// function KeyStop(key) {
+// 	tank.speed = 0;
+// }
+
+// function KeyShot() {
+// 	// if (tank.qua == 2) {
+// 	// 	tank.qua == 0
+// 	// }
+// 	// bomb[tank.qua] = [tank.nav, tank.x, tank.y];
+// 	// tank.qua += 1;
+// }
+// function Move() {																//functions ---------------
+// 	if (tank.x == 1) { tank.left = false } else { tank.left = true }
+// 	if (tank.x == 8) { tank.right = false } else { tank.right = true }
+// 	if (tank.y == 1) { tank.up = false } else { tank.up = true }
+// 	if (tank.y == 18) { tank.down = false } else { tank.down = true }
+// 	if (tank.nav == 12 && tank.up == true) {
+// 		tank.y -= tank.speed
+// 	}
+// 	else if (tank.nav == 3 && tank.right == true) {
+// 		tank.x += tank.speed
+// 	}
+// 	else if (tank.nav == 6 && tank.down == true) {
+// 		tank.y += tank.speed
+// 	}
+// 	else if (tank.nav == 9 && tank.left == true) {
+// 		tank.x -= tank.speed
+// 	}
+// }
+// function BombMove() {	
+// 	// for (i = 0; i < bomb.length; i++) {
+// 	// 	if (bomb[i][0] == 12) {
+// 	// 		bomb[i][2] -= 1
+// 	// 	}
+// 	// 	else if (bomb[i][0] == 3) {
+// 	// 		bomb[i][1] += 1
+// 	// 	}
+// 	// 	else if (bomb[i][0] == 6) {
+// 	// 		bomb[i][2] += 1
+// 	// 	}
+// 	// 	else if (bomb[i][0] == 9) {
+// 	// 		bomb[i][1] -= 1
+// 	// 	}
+// 	// }
+// }
