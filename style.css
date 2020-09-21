@@ -29,6 +29,7 @@ body {
 	height: 10px;
 	border: 1px solid #555555;
 	margin: 1px;
+	background-color: #777777;
 	transition: background-color 0.1s ;
 }
 .buttons {
