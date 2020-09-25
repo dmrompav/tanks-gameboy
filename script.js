@@ -37,8 +37,9 @@ shot.addEventListener('click', KeyShot);
 document.addEventListener('keydown', KeyMove);
 var moveInt = setInterval(Move, 150),					//FPS
 	bombMoveInt = setInterval(BombMove, 100),
-	enemyMoveInt = setInterval(EnemyMove, 450),
+	enemyMoveInt = setInterval(EnemyMove, 500),
 	enemyCreateInt = setInterval(EnemyCreate, 3000);	//Timer
+	enemyShotInt = setInterval(EnemyShot, 300);
 
 //* 3.1. Global or player's functions========================================
 function TankClear(tank) {
@@ -84,12 +85,12 @@ function TankDraw(tank) {
 		a[tank.y + 1][tank.x + 1].style.backgroundColor = "#000000";
 	}
 }
-function BombClear() {
+function BombClear(tank) {
 	if (!tank.permission) {
 		a[tank.bomb[2]][tank.bomb[1]].style.backgroundColor = "#777777";
 	}
 }
-function BombDraw() {
+function BombDraw(tank) {
 	if (!tank.permission) {
 		a[tank.bomb[2]][tank.bomb[1]].style.backgroundColor = "#000000";
 	}
@@ -145,8 +146,6 @@ function KeyShot() {
 	}
 	tank.permission = false;
 }
-
-
 function Move() {															//Functions ----------
 	TankClear(tank);
 	if (tank.nav == 12 && tank.y > 1) {
@@ -164,7 +163,7 @@ function Move() {															//Functions ----------
 	TankDraw(tank);
 }
 function BombMove() {
-	BombClear();
+	BombClear(tank);
 	if (tank.bomb[1] == 0 || tank.bomb[1] == 9 || tank.bomb[2] == 0 || tank.bomb[2] == 19) {
 		tank.bomb = 0;
 		tank.permission = true;
@@ -181,13 +180,11 @@ function BombMove() {
 	else if (tank.bomb[0] == 9 && tank.bomb[1] > 0) {
 		tank.bomb[1] -= 1
 	}
-	BombDraw();
+	BombDraw(tank);
 }
-
-
 //* 3.2 Enemy functions ===============================================
 function EnemyCreate() {
-	if (quantity < 20) {
+	if (quantity < 3) {
 		enemy[quantity] = {
 			x: 1,
 			y: 1,
@@ -219,109 +216,52 @@ function EnemyMove() {
 	for (i = 0; i < enemy.length; i++) {
 		TankDraw(enemy[i]);
 		let changeNav = Math.floor(Math.random() * 10);
-		if (changeNav > 7 || enemy[i].x == 1 || enemy[i].x == 8 || enemy[i].y == 1 || enemy[i].y == 18) {
+		if (changeNav == 9 || enemy[i].x == 1 || enemy[i].x == 8 || enemy[i].y == 1 || enemy[i].y == 18) {
 			Nav = Math.floor(Math.random() * 4);
 			enemy[i].nav = (Nav + 1) * 3;
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// function BombDraw() {
-// 	// if (!bomb.length == 0) {
-// 	// 	for (i = 0; i < bomb.length; i++) {
-// 	// 		map[bomb[i][1]][bomb[i][0]] = 1;
-// 	// 	}
-// 	// }
-// }
-// function KeyMove(e) {
-// 	let key = e.key;
-// 	key.preventDefault;
-// 	if (key == 'ArrowUp') {
-// 		KeyMoveUp(event);
-// 	}
-// 	if (key == 'ArrowRight') {
-// 		KeyMoveRight(event);
-// 	}
-// 	if (key == 'ArrowDown') {
-// 		KeyMoveDown(event);
-// 	}
-// 	if (key == 'ArrowLeft') {
-// 		KeyMoveLeft(event);
-// 	}
-// }
-// function KeyMoveUp(event) {														//Keys ------------------
-// 	event.preventDefault();
-// 	tank.nav = 12;
-// 	tank.speed = 1;
-// }
-// function KeyMoveRight(event) {
-// 	event.preventDefault();
-// 	tank.nav = 3;
-// 	tank.speed = 1;
-// }
-// function KeyMoveDown(event) {
-// 	event.preventDefault();
-// 	tank.nav = 6;
-// 	tank.speed = 1;
-// }
-// function KeyMoveLeft(event) {
-// 	event.preventDefault();
-// 	tank.nav = 9;
-// 	tank.speed = 1;
-// }
-// function KeyStop(key) {
-// 	tank.speed = 0;
-// }
-
-// function KeyShot() {
-// 	// if (tank.qua == 2) {
-// 	// 	tank.qua == 0
-// 	// }
-// 	// bomb[tank.qua] = [tank.nav, tank.x, tank.y];
-// 	// tank.qua += 1;
-// }
-// function Move() {																//functions ---------------
-// 	if (tank.x == 1) { tank.left = false } else { tank.left = true }
-// 	if (tank.x == 8) { tank.right = false } else { tank.right = true }
-// 	if (tank.y == 1) { tank.up = false } else { tank.up = true }
-// 	if (tank.y == 18) { tank.down = false } else { tank.down = true }
-// 	if (tank.nav == 12 && tank.up == true) {
-// 		tank.y -= tank.speed
-// 	}
-// 	else if (tank.nav == 3 && tank.right == true) {
-// 		tank.x += tank.speed
-// 	}
-// 	else if (tank.nav == 6 && tank.down == true) {
-// 		tank.y += tank.speed
-// 	}
-// 	else if (tank.nav == 9 && tank.left == true) {
-// 		tank.x -= tank.speed
-// 	}
-// }
-// function BombMove() {	
-// 	// for (i = 0; i < bomb.length; i++) {
-// 	// 	if (bomb[i][0] == 12) {
-// 	// 		bomb[i][2] -= 1
-// 	// 	}
-// 	// 	else if (bomb[i][0] == 3) {
-// 	// 		bomb[i][1] += 1
-// 	// 	}
-// 	// 	else if (bomb[i][0] == 6) {
-// 	// 		bomb[i][2] += 1
-// 	// 	}
-// 	// 	else if (bomb[i][0] == 9) {
-// 	// 		bomb[i][1] -= 1
-// 	// 	}
-// 	// }
-// }
+function EnemyShot() {
+	for (i = 0; i < enemy.length; i++) {
+		if (enemy[i].permission) {
+			enemy[i].bomb = [enemy[i].nav, enemy[i].x, enemy[i].y];
+			if (enemy[i].bomb[0] == 12) {
+				enemy[i].bomb[2] -= 1
+			}
+			else if (enemy[i].bomb[0] == 3) {
+				enemy[i].bomb[1] += 1
+			}
+			else if (enemy[i].bomb[0] == 6) {
+				enemy[i].bomb[2] += 1
+			}
+			else if (enemy[i].bomb[0] == 9) {
+				enemy[i].bomb[1] -= 1
+			}
+		}
+		enemy[i].permission = false;
+		if (!enemy[i].permission) {
+			a[enemy[i].bomb[2]][enemy[i].bomb[1]].style.backgroundColor = "#777777";
+		}
+		if (enemy[i].bomb[1] == 0 || enemy[i].bomb[1] == 9 || enemy[i].bomb[2] == 0 || enemy[i].bomb[2] == 19) {
+			enemy[i].bomb = 0;
+			enemy[i].permission = true;
+		};
+		if (enemy[i].bomb[0] == 12 && enemy[i].bomb[2] > 0) {
+			enemy[i].bomb[2] -= 1
+		}
+		else if (enemy[i].bomb[0] == 3 && enemy[i].bomb[1] < 9) {
+			enemy[i].bomb[1] += 1
+		}
+		else if (enemy[i].bomb[0] == 6 && enemy[i].bomb[2] < 19) {
+			enemy[i].bomb[2] += 1
+		}
+		else if (enemy[i].bomb[0] == 9 && enemy[i].bomb[1] > 0) {
+			enemy[i].bomb[1] -= 1
+		}
+		if (!enemy[i].permission) {
+			a[enemy[i].bomb[2]][enemy[i].bomb[1]].style.backgroundColor = "#000000";
+		}
+		console.log("shot" + i)
+	}
+}
